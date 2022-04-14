@@ -1,0 +1,133 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdk 31
+    flavorDimensions "default"
+    defaultConfig {
+        applicationId "com.example.peliculas"
+        minSdk 23
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation":"$projectDir/schemas".toString(),
+                        "room.incremental":"true",
+                        "room.expandProjection":"true"]
+            }
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('keyPeliculas.jks')
+            keyAlias 'peliculas'
+            keyPassword '12345678'
+            storePassword '12345678'
+            v1SigningEnabled false
+            v2SigningEnabled true
+        }
+    }
+
+    productFlavors{
+        dev {
+            versionNameSuffix "-DEV"
+            buildConfigField("String","url_base_movies","\"https://api.themoviedb.org/4/\"")
+            buildConfigField("String","url_base_poster","\"https://image.tmdb.org/t/p/w342/\"")
+            buildConfigField("String", "key_movies", "\"78295f97e684736582d467ddfe8f027e\"")
+        }
+        qa {
+            versionNameSuffix "-QA"
+            buildConfigField("String","url_base_movies","\"https://api.themoviedb.org/4/\"")
+            buildConfigField("String","url_base_poster","\"https://image.tmdb.org/t/p/w342/\"")
+            buildConfigField("String", "key_movies", "\"78295f97e684736582d467ddfe8f027e\"")
+        }
+        prod {
+            versionNameSuffix ""
+            buildConfigField("String","url_base_movies","\"https://api.themoviedb.org/4/\"")
+            buildConfigField("String","url_base_poster","\"https://image.tmdb.org/t/p/w342/\"")
+            buildConfigField("String", "key_movies", "\"78295f97e684736582d467ddfe8f027e\"")
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            debuggable false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            debuggable true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
+        dataBinding = true
+    }
+    kapt {
+        arguments {
+            arg("room.schemaLocation", "$projectDir/schemas".toString())
+        }
+    }
+}
+
+dependencies {
+    def roomVersion = "2.4.2"
+    def okhttp = "4.4.0"
+    def retrofitVersion = '2.9.0'
+    def retrofitRX = '2.3.0'
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    //ROOM
+    kapt "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    implementation "androidx.room:room-runtime:$roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$roomVersion"
+    //RXJAVA2
+    implementation "io.reactivex.rxjava2:rxjava:2.2.18"
+    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+    implementation 'androidx.room:room-rxjava2:2.4.2'
+    //LIFECYCLE
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
+    //RETROFIT
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitRX"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
+    //GLIDE
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    //PAGING
+    implementation "androidx.paging:paging-runtime:3.1.1"
+    //SWIPE REFRESH
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    //INJECT DAGGER
+    implementation 'com.google.dagger:dagger:2.35.1'
+    kapt 'com.google.dagger:dagger-compiler:2.35.1'
+}
