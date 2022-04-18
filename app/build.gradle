@@ -80,6 +80,10 @@ android {
     buildFeatures {
         viewBinding true
         dataBinding = true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.1.1'
     }
     kapt {
         arguments {
@@ -93,6 +97,7 @@ dependencies {
     def okhttp = "4.4.0"
     def retrofitVersion = '2.9.0'
     def retrofitRX = '2.3.0'
+    def compose_version = '1.4.0'
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
@@ -130,4 +135,8 @@ dependencies {
     //INJECT DAGGER
     implementation 'com.google.dagger:dagger:2.35.1'
     kapt 'com.google.dagger:dagger-compiler:2.35.1'
+    //COMPOSE
+
+    implementation "androidx.activity:activity-compose:1.4.0"
+    implementation "androidx.compose.material:material:1.1.1"
 }
