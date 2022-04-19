@@ -6,10 +6,7 @@
 
     <data>
         <import type="android.view.View"/>
-        <variable
-            name="viewModel"
-            type="com.example.peliculas.ui.main.view.activities.movie_list.viewmodel.MovieViewModel" />
-        <variable
+         <variable
             name="status"
             type="com.example.peliculas.utils.Status" />
         <variable

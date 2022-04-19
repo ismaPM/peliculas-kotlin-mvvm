@@ -16,6 +16,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 
+
+enum class MoviesStatus { LOADING, ERROR, DONE }
+
 class MovieViewModel(
     private val movieRepository: MovieRepository,
     private val dbHelper: DatabaseHelper
@@ -25,6 +28,9 @@ class MovieViewModel(
     val movies: LiveData<Resource<MovieResponse>> get() = _movies
     private val _moviesDB = MutableLiveData<Resource<List<Movie>>>()
     val moviesDB: LiveData<Resource<List<Movie>>> get() = _moviesDB
+    private val _status = MutableLiveData<MoviesStatus>()
+    val status: LiveData<MoviesStatus>
+        get() = _status
 
     /**
      * Método para obtener peliculas
@@ -39,26 +45,34 @@ class MovieViewModel(
                     //ERROR EN SERVICIO
                     response?.success?.let {
                         _movies.postValue(Resource.error("Error al obtener movies", null))
+                        _status.postValue(MoviesStatus.ERROR)
                     }
                     //NO SE ENCUENTRAN IDS
                     response?.errors?.let {
                         _movies.postValue(Resource.error("Error al obtener movies", null))
+                        _status.postValue(MoviesStatus.ERROR)
                     }
                     //RESPUESTA CORRECTA
+
                     _movies.postValue(Resource.success(response))
+                    _status.postValue(MoviesStatus.DONE)
+
                 }, { throwable ->
                     when (throwable) {
                         is NetworkException -> {
                             // TODO handle 'no network'
                             _movies.postValue(Resource.noInternet(throwable.message, null))
+                            _status.postValue(MoviesStatus.ERROR)
                         }
                         is TimeOutException -> {
                             // TODO handle 'time out'
                             _movies.postValue(Resource.timeOut(throwable.message, null))
+                            _status.postValue(MoviesStatus.ERROR)
                         }
                         else -> {
                             // TODO handle some other error
                             _movies.postValue(Resource.throwError(throwable.message, null))
+                            _status.postValue(MoviesStatus.ERROR)
                         }
                     }
                 })

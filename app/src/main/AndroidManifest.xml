@@ -20,6 +20,13 @@
             android:exported="true"
             android:screenOrientation="fullSensor"
             android:theme="@style/Theme.Peliculas.NoActionBar">
+
+        </activity>
+        <activity
+            android:name=".ui.main.view.activities.movie_list.MovieComposeActivity"
+            android:exported="true"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/Theme.Peliculas.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
